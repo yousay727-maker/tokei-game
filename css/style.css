@@ -1,0 +1,707 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap');
+
+:root {
+  --font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', sans-serif;
+  --color-bg: #FFFDF5;
+  --color-card-bg: #FFFFFF;
+  --color-primary: #FF9F1C;
+  --color-primary-dark: #F77F00;
+  --color-hour: #FF5964;       /* 時・短針の赤 */
+  --color-minute: #2E86DE;     /* 分・長針の青 */
+  --color-green: #10B981;      /* 正解・成功の緑 */
+  --color-text: #2D3748;
+  --color-text-light: #718096;
+  --border-radius-lg: 24px;
+  --border-radius-md: 16px;
+  --box-shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.06);
+  --box-shadow-button: 0 6px 0 rgba(0, 0, 0, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* アプリ全体の枠組 */
+#app-container {
+  width: 100%;
+  max-width: 540px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 24px;
+}
+
+/* ヘッダー */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 12px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  text-shadow: 1px 2px 0 #FFF;
+  letter-spacing: 0.05em;
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: #FFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #CBD5E1;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-icon:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #CBD5E1;
+}
+
+/* ナビゲーション（モード切替タブ） */
+.mode-tabs {
+  display: flex;
+  background: #FFE8D6;
+  padding: 5px;
+  border-radius: 20px;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 4px;
+  border: none;
+  background: transparent;
+  border-radius: 16px;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #B45309;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.tab-btn .tab-icon {
+  font-size: 1.2rem;
+}
+
+.tab-btn.active {
+  background: #FFFFFF;
+  color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(247, 127, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* メインコンテンツエリア */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-section {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.view-section.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 難易度バー */
+.difficulty-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 30px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.diff-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+}
+
+.diff-btn {
+  border: 1.5px solid #CBD5E1;
+  background: #F8FAFC;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.diff-btn.active {
+  background: var(--color-primary);
+  color: #FFF;
+  border-color: var(--color-primary-dark);
+}
+
+/* お題・メッセージカード */
+.question-card {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: var(--border-radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--box-shadow-soft);
+  text-align: center;
+  position: relative;
+  border: 3px solid #FFF1C5;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #2D3748;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+}
+
+.question-highlight-hour {
+  color: var(--color-hour);
+  font-size: 1.5rem;
+}
+
+.question-highlight-min {
+  color: var(--color-minute);
+  font-size: 1.5rem;
+}
+
+.speak-hint-btn {
+  background: #FEF3C7;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+/* 時計ラッパー */
+.clock-area {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 12px;
+}
+
+.clock-wrapper {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* 時計SVGスタイル */
+.clock-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.clock-outer-rim {
+  fill: #FFE3A8;
+}
+
+.clock-rim {
+  fill: #FFD166;
+  stroke: #F4A261;
+  stroke-width: 4;
+}
+
+.hour-num-bg {
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+
+.hour-mark-group.active .hour-num-bg {
+  fill: rgba(255, 89, 100, 0.18);
+}
+
+.hour-num {
+  font-family: var(--font-family);
+  font-size: 26px;
+  font-weight: 900;
+  fill: #3D405B;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.hour-mark-group.active .hour-num {
+  fill: var(--color-hour);
+  font-weight: 900;
+}
+
+.min-tick {
+  stroke: #CBD5E1;
+  stroke-linecap: round;
+}
+
+.min-tick-large {
+  stroke: #64748B;
+  stroke-width: 2.5;
+}
+
+.min-tick-small {
+  stroke: #E2E8F0;
+  stroke-width: 1.5;
+}
+
+.min-label {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--color-minute);
+  text-anchor: middle;
+}
+
+/* 針 */
+.hand-group {
+  cursor: grab;
+}
+
+.clock-svg.readonly .hand-group {
+  cursor: default;
+}
+
+.hand-group:active {
+  cursor: grabbing;
+}
+
+.hour-hand-body {
+  fill: var(--color-hour);
+}
+
+.minute-hand-body {
+  fill: var(--color-minute);
+}
+
+.hand-knob {
+  stroke-width: 3;
+}
+
+.hour-knob {
+  fill: #FFF;
+  stroke: var(--color-hour);
+}
+
+.minute-knob {
+  fill: #FFF;
+  stroke: var(--color-minute);
+}
+
+.hand-tag {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 900;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.hour-knob + .hand-tag {
+  fill: var(--color-hour);
+}
+
+.minute-knob + .hand-tag {
+  fill: var(--color-minute);
+}
+
+.clock-center-cap {
+  fill: #FFE74C;
+  stroke: #3D405B;
+  stroke-width: 3;
+}
+
+/* 針の色の凡例ガイド（子ども・親向け） */
+.hand-guide-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.guide-color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.guide-hour .guide-color-dot {
+  background-color: var(--color-hour);
+}
+
+.guide-hour {
+  color: var(--color-hour);
+}
+
+.guide-minute .guide-color-dot {
+  background-color: var(--color-minute);
+}
+
+.guide-minute {
+  color: var(--color-minute);
+}
+
+/* クイズ用 選択肢ボタン */
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.option-btn {
+  background: #FFFFFF;
+  border: 3px solid #E2E8F0;
+  border-radius: var(--border-radius-md);
+  padding: 16px 8px;
+  font-family: var(--font-family);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #2D3748;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #CBD5E1;
+  transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.option-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #CBD5E1;
+}
+
+.option-btn.correct {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+  box-shadow: 0 6px 0 #059669;
+  animation: bounce 0.5s;
+}
+
+.option-btn.wrong {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  color: #991B1B;
+  box-shadow: 0 6px 0 #DC2626;
+  animation: shake 0.4s;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* 操作用アクションボタン（できた！・つぎへ） */
+.action-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.big-btn {
+  width: 100%;
+  max-width: 320px;
+  padding: 16px;
+  border: none;
+  border-radius: 30px;
+  font-family: var(--font-family);
+  font-size: 1.35rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-primary {
+  background: #FF9F1C;
+  color: #FFFFFF;
+  box-shadow: 0 6px 0 #E07A00;
+}
+
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #E07A00;
+}
+
+.btn-success {
+  background: #10B981;
+  color: #FFFFFF;
+  box-shadow: 0 6px 0 #059669;
+}
+
+.btn-success:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #059669;
+}
+
+/* 生活シーン連動カード（フリーモード・お題用） */
+.scene-display-card {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: var(--border-radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--box-shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 3px solid #E2E8F0;
+  transition: all 0.3s ease;
+}
+
+.scene-icon-box {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #F8FAFC;
+}
+
+.scene-illustration {
+  width: 58px;
+  height: 58px;
+}
+
+.scene-info {
+  flex: 1;
+  text-align: left;
+}
+
+.scene-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #FFF;
+  margin-bottom: 4px;
+}
+
+.scene-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1E293B;
+  margin-bottom: 2px;
+}
+
+.scene-desc {
+  font-size: 0.9rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* 時間デジタル表示バー */
+.digital-time-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.digital-hour {
+  color: var(--color-hour);
+}
+
+.digital-colon {
+  color: #94A3B8;
+}
+
+.digital-minute {
+  color: var(--color-minute);
+}
+
+.digital-kana {
+  font-size: 1.1rem;
+  color: #475569;
+  font-weight: 700;
+}
+
+/* クイック時間ボタン（フリーモードで押すとその時間にジャンプ） */
+.quick-time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.quick-btn {
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 10px 4px;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 3px 0 #CBD5E1;
+}
+
+.quick-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #CBD5E1;
+}
+
+/* 正解オーバーレイ・紙吹雪 */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.feedback-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.feedback-modal.show {
+  display: flex;
+}
+
+.feedback-content {
+  background: #FFFFFF;
+  border-radius: 32px;
+  padding: 28px 24px;
+  width: 88%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border: 4px solid #FFD166;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.feedback-icon {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.feedback-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #E07A00;
+  margin-bottom: 6px;
+}
+
+.feedback-message {
+  font-size: 1.1rem;
+  color: #475569;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
